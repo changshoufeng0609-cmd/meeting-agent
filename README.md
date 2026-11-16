@@ -20,7 +20,7 @@ outputs/<basename>/
    └── summary.pdf
 ```
 
-中英混雜友善；轉錄與摘要皆本機處理。
+中英混雜友善。轉錄在本機完成，音檔不會離開你的電腦；`/meeting` 的摘要由 Claude Code 產生，逐字稿文字會傳送到 Anthropic 處理。
 
 ## Setup（只跑一次）
 
@@ -87,6 +87,7 @@ Claude 會：
 - 超過 90 分鐘的音檔會自動切 30 分鐘 chunk，用 offset 還原時間戳。
 - 模型 cache 在 `~/.cache/huggingface/hub/`。
 - PDF 渲染使用 headless Chromium（Playwright），字型優先：PingFang TC → Heiti TC → Hiragino Sans CNS → Noto Sans CJK TC。Chromium 會把實際使用的字型 subset 完整內嵌進 PDF，在 Preview / Adobe Acrobat / 其他閱讀器都不會缺字。
+- PDF 渲染時會停用 JavaScript 並封鎖所有網路與檔案請求，所以逐字稿裡夾帶的 HTML 不會被執行，也不會對外連線。
 - 早期版本曾用 WeasyPrint，在 macOS 上會踩到 PingFang.ttc 字型子集嵌入的問題（PDF 在某些閱讀器顯示成缺字），已改用 Chromium 解決。
 
 ## License

@@ -131,7 +131,12 @@ def render(md_path: Path, pdf_path: Path) -> None:
     with sync_playwright() as p:
         browser = p.chromium.launch()
         try:
-            page = browser.new_page()
+            # Markdown passes raw HTML through, and transcripts are untrusted text, so render
+            # with JavaScript off and every network or file request blocked. The page only
+            # needs inline CSS and system fonts, so the PDF looks the same.
+            context = browser.new_context(java_script_enabled=False)
+            page = context.new_page()
+            page.route("**/*", lambda route: route.abort())
             page.set_content(full_html, wait_until="domcontentloaded")
             page.emulate_media(media="print")
             page.pdf(
